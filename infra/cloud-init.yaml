@@ -1,0 +1,81 @@
+#cloud-config
+# NightShift provisioning: build llama.cpp with Arm KleidiAI kernels, prep model disk.
+package_update: true
+packages:
+  - build-essential
+  - cmake
+  - ccache
+  - git
+  - libcurl4-openssl-dev
+  - python3-pip
+  - python3-venv
+  - htop
+  - numactl
+  - jq
+
+write_files:
+  - path: /usr/local/bin/nightshift-fetch-model
+    permissions: "0755"
+    content: |
+      #!/usr/bin/env bash
+      # Usage: nightshift-fetch-model [repo] [include-glob]
+      # Default: Unsloth's 2-bit dynamic quant of Kimi K2 Thinking (~360 GB)
+      set -euo pipefail
+      REPO="${1:-unsloth/Kimi-K2-Thinking-GGUF}"
+      INCLUDE="${2:-UD-Q2_K_XL/*}"
+      export HF_HUB_ENABLE_HF_TRANSFER=1
+      source /opt/hf/bin/activate
+      mkdir -p /data/models
+      echo "Downloading $REPO ($INCLUDE) -> /data/models ..."
+      hf download "$REPO" --include "$INCLUDE" --local-dir "/data/models/$(basename "$REPO")"
+      echo "Done. Files:"
+      du -sh /data/models/*/*
+
+  - path: /etc/systemd/system/llama-server.service
+    content: |
+      [Unit]
+      Description=NightShift llama.cpp OpenAI-compatible server (Kimi K2 on Arm)
+      After=network.target data.mount
+
+      [Service]
+      Type=simple
+      User=nightshift
+      # --cpu-strict + full thread count: one worker per Cobalt physical core
+      ExecStart=/bin/bash -lc 'exec /opt/llama.cpp/build/bin/llama-server \
+        --model $(ls /data/models/Kimi-K2-Thinking-GGUF/UD-Q2_K_XL/*00001-of-*.gguf) \
+        --alias kimi-k2 \
+        --host 0.0.0.0 --port 8080 \
+        --ctx-size 32768 \
+        --threads $(nproc) \
+        --no-warmup \
+        --jinja'
+      Restart=on-failure
+      RestartSec=10
+
+      [Install]
+      WantedBy=multi-user.target
+
+runcmd:
+  # --- model disk: format on first boot only, mount at /data ---
+  - |
+    DISK=$(lsblk -dno NAME,SIZE -e 7,11 | sort -k2 -h | tail -1 | awk '{print "/dev/"$1}')
+    if ! blkid "$DISK" >/dev/null 2>&1; then mkfs.xfs -f "$DISK"; fi
+    mkdir -p /data
+    UUID=$(blkid -s UUID -o value "$DISK")
+    grep -q "$UUID" /etc/fstab || echo "UUID=$UUID /data xfs defaults,nofail 0 2" >> /etc/fstab
+    mount -a
+    mkdir -p /data/models && chown -R nightshift:nightshift /data
+  # --- python env for HF downloads ---
+  - python3 -m venv /opt/hf && /opt/hf/bin/pip install -q "huggingface_hub[hf_transfer]"
+  # --- llama.cpp with Arm KleidiAI (i8mm/SVE microkernels) ---
+  - |
+    git clone --depth 1 https://github.com/ggml-org/llama.cpp /opt/llama.cpp
+    cmake -S /opt/llama.cpp -B /opt/llama.cpp/build \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DGGML_CPU_KLEIDIAI=ON \
+      -DGGML_NATIVE=ON \
+      -DLLAMA_CURL=ON
+    cmake --build /opt/llama.cpp/build --config Release -j $(nproc) --target llama-server llama-cli llama-bench
+    chown -R nightshift:nightshift /opt/llama.cpp
+  - systemctl daemon-reload
+  - touch /var/lib/cloud/instance/nightshift-ready
