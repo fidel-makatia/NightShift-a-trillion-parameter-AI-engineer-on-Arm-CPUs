@@ -1,0 +1,4 @@
+Head-to-head vs llama.cpp production Q8_0  ·  M=4096 K=4096 B=8  ·  Neoverse-N2
+  llama.cpp ggml_vec_dot_q8_0      7.09 ms     37.9 GFLOP/s
+  ours (SMMLA 4x4 GEMM)            2.83 ms     94.9 GFLOP/s   2.51x
+  correctness vs production: max|err| = 0

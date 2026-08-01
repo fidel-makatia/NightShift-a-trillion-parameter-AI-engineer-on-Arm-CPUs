@@ -94,11 +94,12 @@ one-command deploy.
 - **[The NightShift Action](action/)** — a GitHub Action that sends each PR to your endpoint for
   an overnight review; it found real bugs in this repo's own code.
 - **[Arm kernel](kernels/)** — a hand-written **i8mm SMMLA** microkernel for the batched
-  quantized MoE GEMM, hitting **110 GFLOP/s** on one Neoverse-N2 core — **2.3× over the
-  compiler's auto-vectorized SDOT**, bit-exact. The compute core of expert layers, optimized
-  for Cobalt 100.
+  quantized MoE GEMM. Benchmarked head-to-head against llama.cpp's **actual production Q8_0
+  kernel** (linked `libggml-cpu.so`): **94.9 vs 37.9 GFLOP/s — 2.51×, bit-exact** on one
+  Neoverse-N2 core. (Honest caveat: 2.5× is over ggml's per-row path; on par with its repacked
+  SMMLA gemm. The real open gap is the sub-2-bit K/IQ quants — see [`kernels/`](kernels/).)
 
-![Arm i8mm kernel throughput](playbook/artifacts/pro_kernel.png)
+![Our Arm kernel vs llama.cpp production](playbook/artifacts/pro_kernel_h2h.png)
 
 ## Benchmarks
 

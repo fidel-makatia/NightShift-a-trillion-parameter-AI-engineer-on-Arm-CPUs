@@ -16,6 +16,28 @@ runs. Optimized for Azure Cobalt 100 (Neoverse-N2) using Arm's **i8mm SMMLA** in
 
 All kernels verified `max|err| = 0` against the scalar oracle.
 
+## Head-to-head vs llama.cpp's production kernel (the honest test)
+
+We linked the real `libggml-cpu.so` and called `ggml_vec_dot_q8_0_q8_0` — the exact function
+llama.cpp runs for a Q8_0 matmul — head-to-head against our kernel on the same data:
+
+![head-to-head](../playbook/artifacts/pro_kernel_h2h.png)
+
+| Kernel | GFLOP/s | |
+|---|---|---|
+| llama.cpp `ggml_vec_dot_q8_0_q8_0` (production per-row path) | 37.9 | baseline |
+| **ours (SMMLA 4×4 GEMM)** | **94.9** | **2.51× · bit-exact (max\|err\|=0)** |
+
+**In the interest of honesty:** this 2.51× is over llama.cpp's *per-row* `vec_dot` path — the
+one it uses when weights aren't pre-repacked. llama.cpp **also** ships a repacked
+`ggml_gemm_q8_0_4x8_q8_0` that uses the *same* SMMLA technique as ours; against that repacked
+path our kernel is on par, not 2.5× ahead. The honest takeaways: **(1)** our independently
+written kernel is production-class (matches ggml's best, bit-exact), and **(2)** it beats the
+path that actually runs whenever weights aren't repacked, by 2.5×. The genuinely *unoptimized*
+gap — and the real contribution to pursue — is the **sub-2-bit K-quant / IQ formats** (Q2_K,
+IQ1_S) that K2 and K3 use, which have **no** SMMLA GEMM in ggml today and fall back to the slow
+generic path.
+
 ## The insight: batching turns memory-bound into compute-bound
 
 At **batch = 1** (single request), the GEMM is a GEMV — memory-bandwidth-bound. Every weight
