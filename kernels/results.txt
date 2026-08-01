@@ -1,0 +1,15 @@
+Quantized MoE GEMM  ·  M=4096 K=4096  ·  Neoverse-N2  ·  speedup vs naive C
+  batch B=1   (one weight read serves 1 concurrent requests)
+    naive      5.295 ms      6.3 GFLOP/s   1.00x  max|err|=0
+    autovec    0.680 ms     49.4 GFLOP/s   7.79x  max|err|=0
+    neon       0.675 ms     49.7 GFLOP/s   7.85x  max|err|=0
+  batch B=4   (one weight read serves 4 concurrent requests)
+    naive     21.180 ms      6.3 GFLOP/s   1.00x  max|err|=0
+    autovec    2.874 ms     46.7 GFLOP/s   7.37x  max|err|=0
+    neon       2.878 ms     46.6 GFLOP/s   7.36x  max|err|=0
+    i8mm       1.214 ms    110.6 GFLOP/s  17.45x  max|err|=0
+  batch B=16  (one weight read serves 16 concurrent requests)
+    naive     84.802 ms      6.3 GFLOP/s   1.00x  max|err|=0
+    autovec   11.207 ms     47.9 GFLOP/s   7.57x  max|err|=0
+    neon      11.180 ms     48.0 GFLOP/s   7.59x  max|err|=0
+    i8mm       4.991 ms    107.6 GFLOP/s  16.99x  max|err|=0

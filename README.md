@@ -93,6 +93,12 @@ one-command deploy.
   dev workloads, and a Python analyzer emits a RAM-vs-NVMe placement policy.
 - **[The NightShift Action](action/)** — a GitHub Action that sends each PR to your endpoint for
   an overnight review; it found real bugs in this repo's own code.
+- **[Arm kernel](kernels/)** — a hand-written **i8mm SMMLA** microkernel for the batched
+  quantized MoE GEMM, hitting **110 GFLOP/s** on one Neoverse-N2 core — **2.3× over the
+  compiler's auto-vectorized SDOT**, bit-exact. The compute core of expert layers, optimized
+  for Cobalt 100.
+
+![Arm i8mm kernel throughput](playbook/artifacts/pro_kernel.png)
 
 ## Benchmarks
 
