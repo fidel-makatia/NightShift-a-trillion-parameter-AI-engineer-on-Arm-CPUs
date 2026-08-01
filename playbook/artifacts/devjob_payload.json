@@ -1,0 +1,14 @@
+{
+  "model": "kimi-k2",
+  "max_tokens": 3000,
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are NightShift, an overnight PR reviewer. Review the diff, list each bug you find as 'SEVERITY: description — fix', most severe first. Be concise and specific."
+    },
+    {
+      "role": "user",
+      "content": "PR #7: add benchmark sweep script + remote launcher\n\n```diff\n--- /dev/null\n+++ b/bench/bench_sweep.sh\n@@ -0,0 +1,10 @@\n+#!/usr/bin/env bash\n+set -uo pipefail\n+MODEL=$(ls /data/models/Kimi-K2-Thinking-GGUF/UD-Q2_K_XL/*00001-of-*.gguf)\n+sudo systemctl stop llama-server\n+mkdir -p /data/bench\n+/opt/llama.cpp/build/bin/llama-bench -m \"$MODEL\" -p 512 -n 128 -t 24,48,96 --mmap 1 -o csv \\\n+  > /data/bench/k2_udq2_threads.csv 2> /data/bench/k2_udq2_threads.log\n+sudo systemctl start llama-server\n+touch /data/bench/SWEEP_DONE\n--- /dev/null\n+++ b/bench/launch.sh\n@@ -0,0 +1,3 @@\n+#!/usr/bin/env bash\n+ssh vm 'nohup /home/nightshift/bench_sweep.sh > /data/bench/sweep.log 2>&1 &'\n+echo \"sweep launched\"\n```"
+    }
+  ]
+}

@@ -56,16 +56,36 @@ E96ps_v6 (96× Arm Neoverse-N2 cores, Cobalt 100, 672 GiB RAM, **zero GPUs**):
 | Resident memory under load | ~15 GiB hot + page-cached weights — the MoE sparsity story in one number |
 | GPUs involved | 0 |
 
+### Two tiers, one Arm VM
+
+The same box serves both: the 1T model for deep asynchronous work (overnight PR review,
+where nobody watches tokens stream) and a 30B-A3B MoE for interactive coding — comfortably
+above the 30 tok/s interactive line.
+
+![Two serving tiers](playbook/artifacts/two_tier.png)
+
+### What it costs (official Azure retail pricing, measured throughput)
+
+**A trillion-parameter deep PR review: ~8 cents on spot. An overnight batch of 100: ~$8.**
+
+![Cost per review](playbook/artifacts/cost_per_review.png)
+
+### Playbook finding #1: more cores ≠ more tokens
+
+Generation is memory-bandwidth-bound. K2 peaks at **64 threads (11.0 tok/s)** — not 96.
+Qwen3-30B falls off a cliff at 96 threads (48 → 3.2 tok/s). The E96ps_v6 spans two NUMA
+nodes of 48 cores; past one node's bandwidth, threads fight instead of helping. We also
+measured `--numa distribute` making K2 *4.8× slower* (2.3 tok/s), and established that
+the 2-bit K2 (360 GB) cannot strict-bind to one node (330 GB/node) — but a 1-bit quant
+(245 GB) can, which is the next experiment.
+
+![The NUMA cliff](playbook/artifacts/numa_cliff.png)
+
 ![Thread scaling on Cobalt 100](playbook/artifacts/threads_sweep.png)
 
-**First playbook finding:** prompt processing (compute-bound) scales with cores —
-6.6 → 12.7 → 20.6 tok/s at 24/48/96 threads. Token generation (bandwidth-bound) **peaks at
-48 threads (10.4 tok/s) and *drops* at 96**: the E96ps_v6 spans two NUMA nodes of 48 cores,
-and generation saturates one node's memory bandwidth. NUMA-aware placement, not more cores,
-is the lever — exactly the kind of Arm-specific tuning the playbook exists to document.
-
-Raw artifacts: [`playbook/artifacts/`](playbook/artifacts/) — quant ladder, KleidiAI on/off,
-and NUMA-pinned runs land next; see [PLAN.md](PLAN.md) Phase 2.
+Raw artifacts and reproducible scripts: [`playbook/artifacts/`](playbook/artifacts/),
+[`bench/`](bench/). Next: quant ladder, KleidiAI on/off, ExpertAtlas expert-placement
+profiling — see [PLAN.md](PLAN.md).
 
 ## License
 
