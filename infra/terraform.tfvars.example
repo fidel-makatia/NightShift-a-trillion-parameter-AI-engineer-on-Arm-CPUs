@@ -1,0 +1,8 @@
+# Copy to terraform.tfvars and fill in. (terraform.tfvars is gitignored.)
+subscription_id = "00000000-0000-0000-0000-000000000000"  # az account show --query id -o tsv
+allowed_ip      = "203.0.113.7/32"                          # curl -s -4 ifconfig.me  → /32
+
+# Optional overrides:
+# vm_size       = "Standard_E96ps_v6"   # 96 vCPU / 672 GiB — fits K2 (360GB) or K3 (554GB)
+# zone          = "1"                    # pick a zone with Epsv6 capacity
+# use_spot      = false                  # true once your spot quota is raised
