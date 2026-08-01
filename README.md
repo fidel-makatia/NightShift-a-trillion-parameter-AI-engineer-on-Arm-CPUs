@@ -56,6 +56,17 @@ E96ps_v6 (96× Arm Neoverse-N2 cores, Cobalt 100, 672 GiB RAM, **zero GPUs**):
 | Resident memory under load | ~15 GiB hot + page-cached weights — the MoE sparsity story in one number |
 | GPUs involved | 0 |
 
+### It reviews real pull requests
+
+NightShift reviewing this repo's own PR #7 — the trillion-parameter model found genuine
+defects (including the exact restart-on-failure trap we then applied to `bench.sh`):
+
+![Deep-tier PR review](playbook/artifacts/shot_devjob_k2.png)
+
+Same job on the interactive tier — 7 issues in a couple of seconds at 42 tok/s:
+
+![Interactive-tier PR review](playbook/artifacts/shot_devjob_qwen.png)
+
 ### Two tiers, one Arm VM
 
 The same box serves both: the 1T model for deep asynchronous work (overnight PR review,
