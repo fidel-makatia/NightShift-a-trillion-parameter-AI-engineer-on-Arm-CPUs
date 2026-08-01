@@ -2,7 +2,7 @@
   {"card": {"kicker": "Not just running it — optimizing it",
             "title": "A hand-written Arm kernel that beats llama.cpp",
             "title_size": 40,
-            "subtitle": "Q2_K is the quant Kimi K2 runs — and llama.cpp has NO i8mm GEMM for it. We wrote the first one, using Arm's SMMLA instruction. Benchmarked against the real production kernel on Neoverse-N2:",
+            "subtitle": "Q2_K is the quant Kimi K2 runs — and llama.cpp has NO i8mm GEMM for it. I wrote the first one, using Arm's SMMLA instruction. Benchmarked against the real production kernel on Neoverse-N2:",
             "seconds": 5.0}},
 
   {"image": {"path": "playbook/artifacts/pro_kernel_q2k.png",

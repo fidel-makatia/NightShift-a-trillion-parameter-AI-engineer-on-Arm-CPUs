@@ -6,7 +6,7 @@
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Track: Cloud AI](https://img.shields.io/badge/Arm_Challenge-Cloud_AI-orange.svg)](https://arm-ai-optimization-challenge.devpost.com/)
-[![Platform: Azure Cobalt 100](https://img.shields.io/badge/Platform-Azure_Cobalt_100_(Arm)-0078D4.svg)](https://azure.microsoft.com/en-us/blog/azure-cobalt-100-based-virtual-machines-are-now-generally-available/)
+[![Platform: Azure Cobalt 100](https://img.shields.io/badge/Platform-Azure_Cobalt_100_(Arm)-0078D4.svg)](https://azure.microsoft.com/en-me/blog/azure-cobalt-100-based-virtual-machines-are-now-generally-available/)
 [![Models: Kimi K2 · K3](https://img.shields.io/badge/Models-Kimi_K2_1.04T_·_K3_2.8T-black.svg)](https://github.com/MoonshotAI/Kimi-K2)
 [![Runtime: llama.cpp + KleidiAI](https://img.shields.io/badge/Runtime-llama.cpp_+_KleidiAI-green.svg)](https://github.com/ggml-org/llama.cpp)
 
@@ -95,8 +95,8 @@ one-command deploy.
   an overnight review; it found real bugs in this repo's own code.
 - **[Arm kernel](kernels/)** — hand-written **i8mm SMMLA** microkernels for the batched quantized
   MoE GEMM. The headline: **the first SMMLA GEMM for a K-quant** — `Q2_K` is the format Kimi K2
-  actually runs, and ggml has no i8mm path for it. Ours beats llama.cpp's production kernel
-  **1.41×** (41.9 vs 29.7 GFLOP/s), **bit-exact**, on the real silicon. (We also match ggml's
+  actually runs, and ggml has no i8mm path for it. Mine beats llama.cpp's production kernel
+  **1.41×** (41.9 vs 29.7 GFLOP/s), **bit-exact**, on the real silicon. (I also match ggml's
   best repacked Q8_0 kernel and beat its per-row path 2.5×.)
 
 ![First SMMLA GEMM for a K-quant, vs llama.cpp](playbook/artifacts/pro_kernel_q2k.png)
@@ -135,7 +135,7 @@ to get overnight PR reviews.
 ## Optimization: chasing tokens/sec
 
 Generation is bound by **memory bandwidth** (every token reads all active weights from RAM).
-The honest ladder we measured on K3:
+The honest ladder I measured on K3:
 
 | Config | tok/s | Lever |
 |---|---|---|
@@ -154,8 +154,8 @@ decoding — which beats the per-token wall but needs a vocab-matched draft mode
 [**Colibri**](https://github.com/JustVugg/colibri) is an excellent pure-C engine running frontier
 MoE models (GLM-5.2, **Kimi K3**, Inkling) on consumer hardware via three-tier RAM/NVMe/VRAM
 streaming, learned expert caching, and int8-MTP speculative decoding. It independently validates
-NightShift's thesis and its ~1.8 tok/s CPU numbers confirm our bandwidth analysis. Notably, its
-"learned expert caching" is the same mechanism as our **ExpertAtlas** — convergent evidence the
+NightShift's thesis and its ~1.8 tok/s CPU numbers confirm my bandwidth analysis. Notably, its
+"learned expert caching" is the same mechanism as my **ExpertAtlas** — convergent evidence the
 idea is sound.
 
 **The gap it leaves open is Arm.** Colibri targets x86-64 only. The natural next contribution —

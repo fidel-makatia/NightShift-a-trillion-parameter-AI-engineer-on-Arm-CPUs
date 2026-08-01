@@ -7,7 +7,7 @@ for Azure Cobalt 100 (Neoverse-N2) with Arm's **i8mm SMMLA** instruction.
 ## Headline: the first SMMLA GEMM for a K-quant — and it beats llama.cpp on K2's own format
 
 `ggml_vec_dot_q2_K` (llama.cpp's kernel for **Q2_K**, the quant Kimi K2 actually runs) uses SDOT
-per output row — ggml has **no** i8mm/SMMLA GEMM for any K-quant. We wrote one: unpack the 2-bit
+per output row — ggml has **no** i8mm/SMMLA GEMM for any K-quant. I wrote one: unpack the 2-bit
 weights to int8 with NEON, run a 4×4-tiled SMMLA GEMM, and keep the per-16-group scaling in
 vector registers. Benchmarked against the **linked production kernel** on Neoverse-N2:
 
@@ -16,10 +16,10 @@ vector registers. Benchmarked against the **linked production kernel** on Neover
 | Kernel (Q2_K × Q8_K) | GFLOP/s | |
 |---|---|---|
 | llama.cpp `ggml_vec_dot_q2_K` (production SDOT) | 29.7 | baseline |
-| **ours (SMMLA 4×4, new)** | **41.9** | **1.41× · bit-exact** (max\|rel\|=0.16%, fp16 rounding) |
+| **mine (SMMLA 4×4, new)** | **41.9** | **1.41× · bit-exact** (max\|rel\|=0.16%, fp16 rounding) |
 
 The trick that made it win: Q2_K has a 4-bit scale *per 16 elements* plus a min-correction — do
-that scaling with scalar extracts and it erases the SMMLA gain (we measured 0.97×). Accumulating
+that scaling with scalar extracts and it erases the SMMLA gain (I measured 0.97×). Accumulating
 the scaled dots **in vector registers** (extracting once per super-block) is what lifts it to 1.41×.
 That's also *why* ggml never added i8mm for K-quants — and now there's a path that does. See
 [`q2k_smmla.c`](q2k_smmla.c).
@@ -34,26 +34,26 @@ That's also *why* ggml never added i8mm for K-quants — and now there's a path 
 |---|---|---|---|
 | naive C (`-fno-tree-vectorize`) | 6.3 | 1.0× | — |
 | auto-vectorized / NEON SDOT | ~48 | 7.6× | 1.0× |
-| **i8mm SMMLA, 4×4 tiled (ours)** | **110.6** | **17.5×** | **2.3×** |
+| **i8mm SMMLA, 4×4 tiled (mine)** | **110.6** | **17.5×** | **2.3×** |
 
 All kernels verified `max|err| = 0` against the scalar oracle.
 
 ## Head-to-head vs llama.cpp's production kernel (the honest test)
 
-We linked the real `libggml-cpu.so` and called `ggml_vec_dot_q8_0_q8_0` — the exact function
-llama.cpp runs for a Q8_0 matmul — head-to-head against our kernel on the same data:
+I linked the real `libggml-cpu.so` and called `ggml_vec_dot_q8_0_q8_0` — the exact function
+llama.cpp runs for a Q8_0 matmul — head-to-head against my kernel on the same data:
 
 ![head-to-head](../playbook/artifacts/pro_kernel_h2h.png)
 
 | Kernel | GFLOP/s | |
 |---|---|---|
 | llama.cpp `ggml_vec_dot_q8_0_q8_0` (production per-row path) | 37.9 | baseline |
-| **ours (SMMLA 4×4 GEMM)** | **94.9** | **2.51× · bit-exact (max\|err\|=0)** |
+| **mine (SMMLA 4×4 GEMM)** | **94.9** | **2.51× · bit-exact (max\|err\|=0)** |
 
 **In the interest of honesty:** this 2.51× is over llama.cpp's *per-row* `vec_dot` path — the
 one it uses when weights aren't pre-repacked. llama.cpp **also** ships a repacked
-`ggml_gemm_q8_0_4x8_q8_0` that uses the *same* SMMLA technique as ours; against that repacked
-path our kernel is on par, not 2.5× ahead. The honest takeaways: **(1)** our independently
+`ggml_gemm_q8_0_4x8_q8_0` that uses the *same* SMMLA technique as mine; against that repacked
+path my kernel is on par, not 2.5× ahead. The honest takeaways: **(1)** my independently
 written kernel is production-class (matches ggml's best, bit-exact), and **(2)** it beats the
 path that actually runs whenever weights aren't repacked, by 2.5×. The genuinely *unoptimized*
 gap — and the real contribution to pursue — is the **sub-2-bit K-quant / IQ formats** (Q2_K,
@@ -64,7 +64,7 @@ generic path.
 
 At **batch = 1** (single request), the GEMM is a GEMV — memory-bandwidth-bound. Every weight
 is read once and used once, so the ALU sits idle waiting on RAM, and no compute kernel helps
-(we measured it: all kernels ~equal at B=1). At **batch ≥ 4** (concurrent requests — a shared
+(I measured it: all kernels ~equal at B=1). At **batch ≥ 4** (concurrent requests — a shared
 dev server with continuous batching), one weight read feeds the whole batch, arithmetic
 intensity rises, the op becomes compute-bound, and Arm's **SMMLA** (a 2×2 int8 matrix-multiply
 per instruction, 2× the MAC density of SDOT) delivers the win.
@@ -72,10 +72,10 @@ per instruction, 2× the MAC density of SDOT) delivers the win.
 This is why NightShift's architecture is a **continuous-batched serving tier**, not one request
 at a time — the kernel result and the system design are the same story.
 
-## Why our SMMLA kernel beats the compiler
+## Why my SMMLA kernel beats the compiler
 
 `gcc -O3 -mcpu=neoverse-n2` already auto-vectorizes the reference loop into NEON **SDOT** (~48
-GFLOP/s). To beat it we use a **4×4 register tile**: four independent SMMLA accumulator chains
+GFLOP/s). To beat it I use a **4×4 register tile**: four independent SMMLA accumulator chains
 in flight to hide the instruction's 3–4 cycle latency, packing 2 weight rows × 2 activation
 columns per SMMLA. That lifts single-core throughput to **110 GFLOP/s**.
 

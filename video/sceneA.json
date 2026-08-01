@@ -8,7 +8,7 @@
   {"card": {"kicker": "The problem",
             "title": "Frontier AI is assumed to need GPU clusters",
             "title_size": 44,
-            "subtitle": "A trillion-parameter model usually means racks of expensive GPUs. We asked: does it have to?",
+            "subtitle": "A trillion-parameter model usually means racks of expensive GPUs. I asked: does it have to?",
             "seconds": 4.5}},
 
   {"card": {"kicker": "The insight",
@@ -28,9 +28,9 @@
              "seconds": 3.6}},
 
   {"card": {"kicker": "How far can it go?",
-            "title": "We ran Kimi K3 — 2.8 TRILLION params",
+            "title": "I ran Kimi K3 — 2.8 TRILLION params",
             "title_size": 42,
-            "subtitle": "Five days after release, on CPU, on Arm, via llama.cpp PR #26185 + KleidiAI. To our knowledge, the first CPU inference of K3 on Arm silicon.",
+            "subtitle": "Five days after release, on CPU, on Arm, via llama.cpp PR #26185 + KleidiAI. To my knowledge, the first CPU inference of K3 on Arm silicon.",
             "seconds": 5.0}},
 
   {"image": {"path": "playbook/artifacts/shot_k3.png",
@@ -40,7 +40,7 @@
   {"card": {"kicker": "So what can it actually do?",
             "title": "Real developer work — starting with shipping code",
             "title_size": 40,
-            "subtitle": "We give Kimi a prompt, and it writes a service — then we install and run it on the same Arm VM.",
+            "subtitle": "I give Kimi a prompt, and it writes a service — then I install and run it on the same Arm VM.",
             "seconds": 4.0}},
 
   {"term": {"title": "nightshift@cobalt-100:~ — Arm CPU, no GPU",
