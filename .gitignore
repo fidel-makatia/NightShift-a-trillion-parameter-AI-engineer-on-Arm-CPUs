@@ -15,3 +15,8 @@ __pycache__/
 .DS_Store
 *.log
 bench/results/raw/
+
+# ExpertAtlas offline self-test fixtures (synthetic, not real measurements)
+autotuner/_synthetic_activations.csv
+autotuner/_synthetic_out/
+autotuner/expert-capture
