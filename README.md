@@ -91,13 +91,13 @@ The same box serves both: the 1T model for deep asynchronous work (overnight PR 
 where nobody watches tokens stream) and a 30B-A3B MoE for interactive coding — comfortably
 above the 30 tok/s interactive line.
 
-![Two serving tiers](playbook/artifacts/two_tier.png)
+![Two serving tiers](playbook/artifacts/pro_two_tier.png)
 
 ### What it costs (official Azure retail pricing, measured throughput)
 
 **A trillion-parameter deep PR review: ~8 cents on spot. An overnight batch of 100: ~$8.**
 
-![Cost per review](playbook/artifacts/cost_per_review.png)
+![Cost per review](playbook/artifacts/pro_cost.png)
 
 ### Playbook finding #1: more cores ≠ more tokens
 
@@ -108,9 +108,7 @@ measured `--numa distribute` making K2 *4.8× slower* (2.3 tok/s), and establish
 the 2-bit K2 (360 GB) cannot strict-bind to one node (330 GB/node) — but a 1-bit quant
 (245 GB) can, which is the next experiment.
 
-![The NUMA cliff](playbook/artifacts/numa_cliff.png)
-
-![Thread scaling on Cobalt 100](playbook/artifacts/threads_sweep.png)
+![Thread scaling and the bandwidth wall](playbook/artifacts/pro_scaling.png)
 
 Raw artifacts and reproducible scripts: [`playbook/artifacts/`](playbook/artifacts/),
 [`bench/`](bench/). Next: quant ladder, KleidiAI on/off, ExpertAtlas expert-placement
