@@ -56,8 +56,16 @@ E96ps_v6 (96× Arm Neoverse-N2 cores, Cobalt 100, 672 GiB RAM, **zero GPUs**):
 | Resident memory under load | ~15 GiB hot + page-cached weights — the MoE sparsity story in one number |
 | GPUs involved | 0 |
 
-Raw artifacts: [`playbook/artifacts/`](playbook/artifacts/) — thread sweeps, quant ladder,
-and KleidiAI on/off comparisons land next; see [PLAN.md](PLAN.md) Phase 2.
+![Thread scaling on Cobalt 100](playbook/artifacts/threads_sweep.png)
+
+**First playbook finding:** prompt processing (compute-bound) scales with cores —
+6.6 → 12.7 → 20.6 tok/s at 24/48/96 threads. Token generation (bandwidth-bound) **peaks at
+48 threads (10.4 tok/s) and *drops* at 96**: the E96ps_v6 spans two NUMA nodes of 48 cores,
+and generation saturates one node's memory bandwidth. NUMA-aware placement, not more cores,
+is the lever — exactly the kind of Arm-specific tuning the playbook exists to document.
+
+Raw artifacts: [`playbook/artifacts/`](playbook/artifacts/) — quant ladder, KleidiAI on/off,
+and NUMA-pinned runs land next; see [PLAN.md](PLAN.md) Phase 2.
 
 ## License
 
