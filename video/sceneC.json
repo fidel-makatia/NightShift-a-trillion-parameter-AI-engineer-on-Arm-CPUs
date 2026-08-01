@@ -1,23 +1,33 @@
 [
+  {"card": {"kicker": "Not just running it — optimizing it",
+            "title": "A hand-written Arm kernel that beats llama.cpp",
+            "title_size": 40,
+            "subtitle": "Q2_K is the quant Kimi K2 runs — and llama.cpp has NO i8mm GEMM for it. We wrote the first one, using Arm's SMMLA instruction. Benchmarked against the real production kernel on Neoverse-N2:",
+            "seconds": 5.0}},
+
+  {"image": {"path": "playbook/artifacts/pro_kernel_q2k.png",
+             "caption": "1.41× over llama.cpp's production kernel — bit-exact, on the real silicon.",
+             "seconds": 4.2}},
+
   {"card": {"kicker": "Making it practical",
             "title": "Two tiers, one Arm VM",
             "title_size": 46,
             "subtitle": "Kimi K2/K3 for deep async work (overnight PR review); Qwen3-30B for interactive coding at ~48 tok/s. Same box, no GPU.",
-            "seconds": 4.5}},
+            "seconds": 4.0}},
 
-  {"image": {"path": "playbook/artifacts/pro_two_tier.png", "seconds": 3.6}},
+  {"image": {"path": "playbook/artifacts/pro_two_tier.png", "seconds": 3.4}},
 
   {"card": {"kicker": "The economics",
             "title": "A trillion-parameter code review: 8 cents",
             "title_size": 42,
             "subtitle": "Measured throughput × Azure spot pricing. 100 overnight PR reviews ≈ $8. Your code never leaves your tenant.",
-            "seconds": 4.5}},
+            "seconds": 4.0}},
 
-  {"image": {"path": "playbook/artifacts/pro_cost.png", "seconds": 3.6}},
+  {"image": {"path": "playbook/artifacts/pro_cost.png", "seconds": 3.4}},
 
   {"card": {"kicker": "NightShift",
             "title": "Trillion-parameter AI · Arm CPUs · ~$1/hour",
             "title_size": 40,
-            "subtitle": "Open source (Apache-2.0) · one `terraform apply` · benchmarks, playbook, and a GitHub Action included.",
+            "subtitle": "Open source (Apache-2.0) · one `terraform apply` · a hand-optimized Arm kernel, benchmarks, playbook, and a GitHub Action included.",
             "seconds": 4.5}}
 ]
