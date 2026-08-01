@@ -93,13 +93,13 @@ one-command deploy.
   dev workloads, and a Python analyzer emits a RAM-vs-NVMe placement policy.
 - **[The NightShift Action](action/)** — a GitHub Action that sends each PR to your endpoint for
   an overnight review; it found real bugs in this repo's own code.
-- **[Arm kernel](kernels/)** — a hand-written **i8mm SMMLA** microkernel for the batched
-  quantized MoE GEMM. Benchmarked head-to-head against llama.cpp's **actual production Q8_0
-  kernel** (linked `libggml-cpu.so`): **94.9 vs 37.9 GFLOP/s — 2.51×, bit-exact** on one
-  Neoverse-N2 core. (Honest caveat: 2.5× is over ggml's per-row path; on par with its repacked
-  SMMLA gemm. The real open gap is the sub-2-bit K/IQ quants — see [`kernels/`](kernels/).)
+- **[Arm kernel](kernels/)** — hand-written **i8mm SMMLA** microkernels for the batched quantized
+  MoE GEMM. The headline: **the first SMMLA GEMM for a K-quant** — `Q2_K` is the format Kimi K2
+  actually runs, and ggml has no i8mm path for it. Ours beats llama.cpp's production kernel
+  **1.41×** (41.9 vs 29.7 GFLOP/s), **bit-exact**, on the real silicon. (We also match ggml's
+  best repacked Q8_0 kernel and beat its per-row path 2.5×.)
 
-![Our Arm kernel vs llama.cpp production](playbook/artifacts/pro_kernel_h2h.png)
+![First SMMLA GEMM for a K-quant, vs llama.cpp](playbook/artifacts/pro_kernel_q2k.png)
 
 ## Benchmarks
 

@@ -1,0 +1,4 @@
+Q2_K x Q8_K GEMM  ·  M=1024 K=4096 B=16  ·  Neoverse-N2  (the quant K2 uses)
+  llama.cpp ggml_vec_dot_q2_K (SDOT)     4.51 ms     29.7 GFLOP/s
+  ours (SMMLA 4x4, new)              3.20 ms     42.0 GFLOP/s   1.41x
+  correctness vs production: max|abs|=0.0009766  max|rel|=0.00161

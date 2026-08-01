@@ -1,8 +1,30 @@
 # Arm kernel — quantized MoE GEMM for Neoverse-N2
 
-A hand-written Arm int8 matrix-multiply kernel for the operation at the heart of MoE
-inference: the batched quantized GEMM (`Y = W · X`) that every expert's feed-forward layer
-runs. Optimized for Azure Cobalt 100 (Neoverse-N2) using Arm's **i8mm SMMLA** instruction.
+Hand-written Arm int8 matrix-multiply kernels for the operation at the heart of MoE inference:
+the batched quantized GEMM (`Y = W · X`) that every expert's feed-forward layer runs. Optimized
+for Azure Cobalt 100 (Neoverse-N2) with Arm's **i8mm SMMLA** instruction.
+
+## Headline: the first SMMLA GEMM for a K-quant — and it beats llama.cpp on K2's own format
+
+`ggml_vec_dot_q2_K` (llama.cpp's kernel for **Q2_K**, the quant Kimi K2 actually runs) uses SDOT
+per output row — ggml has **no** i8mm/SMMLA GEMM for any K-quant. We wrote one: unpack the 2-bit
+weights to int8 with NEON, run a 4×4-tiled SMMLA GEMM, and keep the per-16-group scaling in
+vector registers. Benchmarked against the **linked production kernel** on Neoverse-N2:
+
+![Q2_K kernel](../playbook/artifacts/pro_kernel_q2k.png)
+
+| Kernel (Q2_K × Q8_K) | GFLOP/s | |
+|---|---|---|
+| llama.cpp `ggml_vec_dot_q2_K` (production SDOT) | 29.7 | baseline |
+| **ours (SMMLA 4×4, new)** | **41.9** | **1.41× · bit-exact** (max\|rel\|=0.16%, fp16 rounding) |
+
+The trick that made it win: Q2_K has a 4-bit scale *per 16 elements* plus a min-correction — do
+that scaling with scalar extracts and it erases the SMMLA gain (we measured 0.97×). Accumulating
+the scaled dots **in vector registers** (extracting once per super-block) is what lifts it to 1.41×.
+That's also *why* ggml never added i8mm for K-quants — and now there's a path that does. See
+[`q2k_smmla.c`](q2k_smmla.c).
+
+## Q8_0 kernel (for context)
 
 ![kernel throughput](../playbook/artifacts/pro_kernel.png)
 
