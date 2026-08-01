@@ -23,3 +23,9 @@ autotuner/expert-capture
 
 # video working frames (regenerable)
 video/_frames/
+
+video/_grid2_frames/
+video/segA.mp4
+video/segB.mp4
+video/segC.mp4
+video/segB_test.mp4

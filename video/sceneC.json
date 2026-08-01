@@ -1,0 +1,23 @@
+[
+  {"card": {"kicker": "Making it practical",
+            "title": "Two tiers, one Arm VM",
+            "title_size": 46,
+            "subtitle": "Kimi K2/K3 for deep async work (overnight PR review); Qwen3-30B for interactive coding at ~48 tok/s. Same box, no GPU.",
+            "seconds": 4.5}},
+
+  {"image": {"path": "playbook/artifacts/pro_two_tier.png", "seconds": 3.6}},
+
+  {"card": {"kicker": "The economics",
+            "title": "A trillion-parameter code review: 8 cents",
+            "title_size": 42,
+            "subtitle": "Measured throughput × Azure spot pricing. 100 overnight PR reviews ≈ $8. Your code never leaves your tenant.",
+            "seconds": 4.5}},
+
+  {"image": {"path": "playbook/artifacts/pro_cost.png", "seconds": 3.6}},
+
+  {"card": {"kicker": "NightShift",
+            "title": "Trillion-parameter AI · Arm CPUs · ~$1/hour",
+            "title_size": 40,
+            "subtitle": "Open source (Apache-2.0) · one `terraform apply` · benchmarks, playbook, and a GitHub Action included.",
+            "seconds": 4.5}}
+]
