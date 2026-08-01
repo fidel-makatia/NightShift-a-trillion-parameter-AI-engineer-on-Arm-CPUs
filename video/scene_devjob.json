@@ -1,0 +1,33 @@
+[
+  {"card": {"kicker": "NightShift · live on an Azure Arm CPU (Cobalt 100, no GPU)",
+            "title": "Kimi K2 builds & runs a microservice",
+            "title_size": 46,
+            "subtitle": "The 1.04-trillion-parameter model writes a FastAPI service — then we install, run, and hit it. All on Arm CPU.",
+            "seconds": 3.0}},
+
+  {"term": {"title": "nightshift@cobalt-100:~ — 96× Arm Neoverse-N2, no GPU",
+            "segments": [
+              ["cmd", "./devjob_build.sh"],
+              ["out", "===============================================================\n NightShift · real dev job on Arm CPU\n Kimi K2 (1.04T params) writes a deployable microservice,\n then we build & run it on the same 96-core Arm VM. No GPU.\n===============================================================", 0.7],
+              ["out", "[1/5] Kimi K2 is writing the service on Arm CPU...", 0.4],
+              ["out", "      ...done. Generated at 8.6 tok/s on Arm.", 0.6],
+              ["out", "[2/5] Extracting main.py from K2's output...  wrote 73 lines", 0.4],
+              ["out", "----- app/main.py (written by Kimi K2) -----", 0.3],
+              ["out", "from fastapi import FastAPI, HTTPException, Request\nfrom fastapi.responses import RedirectResponse\nfrom pydantic import BaseModel, validator\n\nurl_store: dict[str, str] = {}\nBASE62 = string.ascii_letters + string.digits\n\nclass ShortenRequest(BaseModel):\n    url: str\n    @validator('url')\n    def validate_url(cls, v): ...\n\n@app.post('/api/shorten')\nasync def shorten(req: ShortenRequest): ...", 1.6],
+              ["out", "[3/5] Installing FastAPI + uvicorn on Arm (aarch64 wheels)...", 0.4],
+              ["out", "      installed: fastapi 0.141.1", 0.5],
+              ["out", "[4/5] Launching the service K2 wrote on the Arm CPU...", 0.6],
+              ["pause", 0.5],
+              ["out", "[5/5] Hitting the live API — proof it actually works:", 0.4],
+              ["cmd", "curl -X POST localhost:9000/api/shorten -d '{\"url\":\"https://arm.com/ai\"}'"],
+              ["out", "-> {\"code\":\"hDAsKo\",\"short_url\":\"/hDAsKo\"}", 1.0],
+              ["cmd", "curl -i localhost:9000/hDAsKo"],
+              ["out", "-> HTTP/1.1 307 Temporary Redirect", 0.5],
+              ["out", "-> location: https://arm.com/ai", 1.0],
+              ["pause", 0.4],
+              ["out", "SUCCESS: a working URL-shortener microservice, built by a", 0.2],
+              ["out", "trillion-parameter model and served live on a 96-core Arm", 0.2],
+              ["out", "CPU (Azure Cobalt 100). Zero GPUs.", 0.3]
+            ],
+            "end_hold": 2.5}}
+]
