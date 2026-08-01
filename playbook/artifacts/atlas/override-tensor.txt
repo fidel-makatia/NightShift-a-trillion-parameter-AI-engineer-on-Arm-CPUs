@@ -1,0 +1,6 @@
+# Feed these to llama-server as repeated --override-tensor args.
+# Hot experts stay resident; cold expert FFN tensors are pinned to a
+# memory-mapped (disk-backed) buffer so they don't consume RAM.
+# Policy: keep hottest 50% of cells (76.5% of all activations).
+# Example (regex, disk buffer):
+#   --override-tensor 'blk\.(3|7|11)\.ffn_.*_exps=CPU'

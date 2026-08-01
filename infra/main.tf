@@ -106,12 +106,16 @@ resource "azurerm_network_interface_security_group_association" "nsg_assoc" {
 }
 
 # The model disk: survives VM respins/resizes. Download once, snapshot, reuse.
+# When var.model_snapshot_id is set, the disk is restored from that snapshot — this is
+# what lets us move zones (e.g. when a zone runs out of Arm VM capacity) without
+# re-downloading the 360 GB model.
 resource "azurerm_managed_disk" "models" {
   name                 = "nightshift-models"
   location             = azurerm_resource_group.nightshift.location
   resource_group_name  = azurerm_resource_group.nightshift.name
   storage_account_type = "PremiumV2_LRS"
-  create_option        = "Empty"
+  create_option        = var.model_snapshot_id == "" ? "Empty" : "Copy"
+  source_resource_id   = var.model_snapshot_id == "" ? null : var.model_snapshot_id
   disk_size_gb         = var.model_disk_gb
   disk_iops_read_write = 10000
   disk_mbps_read_write = 800

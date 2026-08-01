@@ -33,6 +33,12 @@ variable "model_disk_gb" {
   default     = 1024
 }
 
+variable "model_snapshot_id" {
+  description = "If set, restore the model disk from this snapshot (enables zone moves without re-downloading)."
+  type        = string
+  default     = ""
+}
+
 variable "admin_username" {
   type    = string
   default = "nightshift"

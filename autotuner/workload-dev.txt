@@ -1,0 +1,30 @@
+Review this Python function for bugs: def divide(a, b): return a / b
+Explain what this bash script does: for f in *.log; do gzip "$f"; done
+Find the security issue: query = "SELECT * FROM users WHERE id = " + user_id
+Refactor this to be more idiomatic: result = []; for x in items: result.append(x*2)
+Why does this Go code deadlock? ch := make(chan int); ch <- 1; fmt.Println(<-ch)
+Write a unit test for a function that parses ISO-8601 timestamps.
+This React component re-renders on every keystroke. How do I fix it with useMemo?
+Explain the difference between a process and a thread in an operating system.
+What does this Rust error mean: cannot borrow `x` as mutable more than once at a time?
+Optimize this SQL query that does a full table scan on a 10M-row orders table.
+Review this Dockerfile for best practices: FROM ubuntu; RUN apt-get install python
+Debug this: my Kubernetes pod is stuck in CrashLoopBackOff, logs show exit code 137.
+Convert this callback-based Node.js code to async/await.
+Explain how TCP's three-way handshake establishes a connection.
+Is this regex correct for matching an email address? ^[a-z]+@[a-z]+\.[a-z]+$
+Write a GitHub Actions workflow that runs pytest on every pull request.
+What's the time complexity of inserting into a balanced binary search tree?
+Review this diff: it removes a null check before dereferencing a pointer in C.
+How do I fix a "detached HEAD" state in git without losing my commits?
+Explain memory-mapped I/O and when mmap outperforms read/write syscalls.
+This function has an off-by-one error in its loop bound. Find and fix it.
+Design a rate limiter for an API using a token-bucket algorithm.
+Why is my float comparison `0.1 + 0.2 == 0.3` returning false in Python?
+Add proper error handling to this file-reading function that ignores exceptions.
+Explain the CAP theorem and its practical implications for distributed databases.
+Review this authentication middleware for timing attacks in the token comparison.
+Convert this recursive Fibonacci to an iterative version with O(1) space.
+What does the `volatile` keyword do in C and when is it actually necessary?
+This goroutine leaks because the channel is never closed. Show the fix.
+Explain how a bloom filter works and its false-positive tradeoff.

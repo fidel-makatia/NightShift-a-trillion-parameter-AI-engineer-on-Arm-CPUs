@@ -1,0 +1,13 @@
+matplotlib not available; skipped charts
+{
+  "total_activations": 240488,
+  "n_layers": 60,
+  "n_experts": 384,
+  "gini": 0.0892,
+  "keep_frac": 0.5,
+  "hot_cells": 6365,
+  "cold_cells": 6365,
+  "hot_activation_share": 0.7651
+}
+
+Headline: keeping the hottest 50% of expert cells in RAM covers 76.5% of all activations (Gini 0.0892).
