@@ -1,0 +1,14 @@
+$ lscpu | grep -E "Architecture|Model name|CPU\(s\)|NUMA"
+Architecture:                            aarch64
+CPU(s):                                  96
+Model name:                              Neoverse-N2
+NUMA node0 CPU(s):                       0-47
+NUMA node1 CPU(s):                       48-95
+
+$ nvidia-smi
+/home/nightshift/capture_shots.sh: line 11: nvidia-smi: command not found
+Command "nvidia-smi" not found  — there is no GPU on this machine.
+
+$ free -h | head -2
+               total        used        free      shared  buff/cache   available
+Mem:           660Gi        14Gi       287Gi       4.3Mi       360Gi       645Gi

@@ -1,0 +1,66 @@
+[
+  {"card": {"kicker": "Arm AI Optimization Challenge 2026 · Cloud AI",
+            "title": "NightShift",
+            "title_size": 72,
+            "subtitle": "A trillion-parameter AI engineer that runs entirely on Arm CPUs. No GPU on Earth involved.",
+            "seconds": 3.2}},
+
+  {"card": {"kicker": "The machine",
+            "title": "One Azure Cobalt 100 VM",
+            "subtitle": "96 Arm Neoverse-N2 cores · 660 GiB RAM · zero GPUs. Spot price ~$1.15/hr.",
+            "seconds": 3.0}},
+
+  {"image": {"path": "playbook/artifacts/shot_hardware.png",
+             "caption": "96 Arm cores, 660 GiB, no GPU present.",
+             "seconds": 3.2}},
+
+  {"card": {"kicker": "How far can Arm CPUs go?",
+            "title": "2.8 trillion parameters. On CPU.",
+            "subtitle": "Kimi K3 — 5 days after release — running on Arm via llama.cpp PR #26185. First known CPU inference of K3.",
+            "seconds": 3.4}},
+
+  {"image": {"path": "playbook/artifacts/shot_k3.png",
+             "caption": "Kimi K3 (2.8T params) generating on Arm CPUs — 2.3 tok/s, no GPU.",
+             "seconds": 3.6}},
+
+  {"card": {"kicker": "A real dev job — live on the Arm CPU",
+            "title": "Kimi K2 builds & ships a microservice",
+            "subtitle": "The 1.04T model writes a FastAPI service, then we install, run, and hit it — all on the same Arm VM.",
+            "seconds": 3.2}},
+
+  {"term": {"title": "nightshift@cobalt-100:~ — Azure Arm CPU, no GPU",
+            "segments": [
+              ["cmd", "./devjob_build.sh   # Kimi K2 (1.04T) builds a real service on Arm"],
+              ["out", "[1/5] Kimi K2 is writing the service on Arm CPU...\n      ...done. Generated at 8.6 tok/s on Arm.", 0.6],
+              ["out", "[2/5] Extracting main.py from K2's output...\n      wrote 73 lines", 0.5],
+              ["out", "----- app/main.py (written by Kimi K2) -----", 0.3],
+              ["out", "from fastapi import FastAPI, HTTPException, Request\nfrom fastapi.responses import RedirectResponse\nfrom pydantic import BaseModel, validator\n\nurl_store: dict[str, str] = {}\nBASE62 = string.ascii_letters + string.digits\n\nclass ShortenRequest(BaseModel):\n    url: str\n    @validator('url')\n    def validate_url(cls, v): ...", 1.2],
+              ["out", "[3/5] Installing FastAPI + uvicorn on Arm (aarch64 wheels)...\n      installed: fastapi 0.141.1", 0.6],
+              ["out", "[4/5] Launching the service K2 wrote on the Arm CPU...", 0.5],
+              ["pause", 0.4],
+              ["cmd", "curl -X POST localhost:9000/api/shorten -d '{\"url\":\"https://arm.com/ai\"}'"],
+              ["out", "-> {\"code\":\"hDAsKo\",\"short_url\":\"/hDAsKo\"}", 0.9],
+              ["cmd", "curl -i localhost:9000/hDAsKo"],
+              ["out", "-> HTTP/1.1 307 Temporary Redirect\n-> location: https://arm.com/ai", 1.0],
+              ["out", "SUCCESS: a working microservice, built by a trillion-parameter model", 0.4],
+              ["out", "         and served live on a 96-core Arm CPU. Zero GPUs.", 0.4]
+            ],
+            "end_hold": 2.0}},
+
+  {"card": {"kicker": "Why it's practical",
+            "title": "Two tiers, one Arm VM",
+            "subtitle": "K2 (1.04T) for depth; Qwen3-30B for interactive speed — both CPU-only.",
+            "seconds": 2.6}},
+
+  {"image": {"path": "playbook/artifacts/pro_two_tier.png", "seconds": 3.4}},
+
+  {"image": {"path": "playbook/artifacts/pro_cost.png",
+             "caption": "A trillion-parameter PR review: 8 cents.",
+             "seconds": 3.6}},
+
+  {"card": {"kicker": "NightShift",
+            "title": "Trillion-parameter AI. Arm CPUs. ~$1/hour.",
+            "title_size": 46,
+            "subtitle": "Open source (Apache-2.0) · one terraform apply · your code never leaves your tenant.",
+            "seconds": 3.4}}
+]

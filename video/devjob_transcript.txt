@@ -1,0 +1,66 @@
+===============================================================
+ NightShift · real dev job on Arm CPU
+ Kimi K2 (1.04T params) writes a deployable microservice,
+ then we build & run it on the same 96-core Arm VM. No GPU.
+===============================================================
+
+[1/5] Kimi K2 is writing the service on Arm CPU...
+    ...done. Generated at 8.8 tok/s on Arm.
+[2/5] Extracting main.py from K2's output...
+    wrote 73 lines
+----- app/main.py (written by Kimi K2) -----
+import hashlib
+import random
+import string
+from typing import Dict, Optional
+from urllib.parse import urlparse
+
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import RedirectResponse
+from pydantic import BaseModel, validator
+
+app = FastAPI()
+
+# In-memory store
+url_store: Dict[str, str] = {}
+
+# Base62 characters
+BASE62_CHARS = string.ascii_letters + string.digits
+
+class ShortenRequest(BaseModel):
+    url: str
+
+    @validator("url")
+    def validate_url(cls, v: str) -> str:
+        parsed = urlparse(v)
+        if not parsed.scheme or not parsed.netloc:
+            raise ValueError("Invalid URL format")
+        if parsed.scheme not in ("http", "https"):
+            raise ValueError("URL must start with http or https")
+        return v
+
+def generate_code(url: str) -> str:
+    # Create a deterministic base for the given URL to avoid collisions
+    # Use a hash of the URL + random salt to get a 6-char base62 code
+    salt = "".join(random.choices(BASE62_CHARS, k=6))
+    hash_input = f"{url}{salt}".encode()
+    hash_digest = hashlib.sha256(hash_input).hexdigest()
+    # Take first 6 bytes and convert to base62
+    hash_int = int(hash_digest[:12], 16)
+    code = ""
+    for _ in range(6):
+--------------------------------------------
+[3/5] Installing FastAPI + uvicorn on Arm (aarch64 wheels)...
+    installed: fastapi 0.141.1
+[4/5] Launching the service K2 wrote on the Arm CPU...
+[5/5] Hitting the live API — proof it actually works:
+    $ curl localhost:9000/healthz
+    -> {"detail":"Short code not found"}
+    $ curl -X POST localhost:9000/api/shorten -d '{"url":"https://arm.com/ai"}'
+    -> {"code":"hDAsKo","short_url":"/hDAsKo"}
+    $ curl -i localhost:9000/hDAsKo   # should 307-redirect
+    -> HTTP/1.1 307 Temporary Redirect
+    -> location: https://arm.com/ai
+
+SUCCESS: Kimi K2 built a working URL-shortener microservice, and it ran and
+served live traffic on a 96-core Arm CPU (Azure Cobalt 100) with zero GPUs.

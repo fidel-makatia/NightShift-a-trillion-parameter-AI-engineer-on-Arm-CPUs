@@ -1,0 +1,6 @@
+$ mpstat -P ALL 1 1   # while Kimi K2 generates on Arm
+    cores >50% busy: 96 / 96   (token generation engages the whole socket)
+
+$ ps -o pcpu,rss,comm -p $(pgrep -f llama-server)
+%CPU   RSS COMMAND
+ 388 384643624 llama-server

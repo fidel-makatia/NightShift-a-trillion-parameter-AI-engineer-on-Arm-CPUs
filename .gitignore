@@ -20,3 +20,6 @@ bench/results/raw/
 autotuner/_synthetic_activations.csv
 autotuner/_synthetic_out/
 autotuner/expert-capture
+
+# video working frames (regenerable)
+video/_frames/
