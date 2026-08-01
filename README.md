@@ -42,9 +42,22 @@ export OPENAI_BASE_URL=http://<vm-ip>:8080/v1
 aider --model openai/kimi-k2      # a trillion-parameter coding agent, on your own tenant
 ```
 
-## The numbers
+## The numbers (first measurements — 2026-07-31)
 
-> Benchmarks land here as they're produced — see [`playbook/`](playbook/) for methodology.
+**It works.** Kimi K2 Thinking — 1.04 trillion parameters — running on a single Azure
+E96ps_v6 (96× Arm Neoverse-N2 cores, Cobalt 100, 672 GiB RAM, **zero GPUs**):
+
+| Metric | Measured |
+|---|---|
+| Token generation | **8.98 tok/s** (warm), 6.09 tok/s first run |
+| Prompt processing | 29.3 tok/s |
+| Time to first token | 479 ms (14-token prompt) |
+| Model footprint | 360 GB on disk (Unsloth UD-Q2_K_XL dynamic 2-bit) |
+| Resident memory under load | ~15 GiB hot + page-cached weights — the MoE sparsity story in one number |
+| GPUs involved | 0 |
+
+Raw artifacts: [`playbook/artifacts/`](playbook/artifacts/) — thread sweeps, quant ladder,
+and KleidiAI on/off comparisons land next; see [PLAN.md](PLAN.md) Phase 2.
 
 ## License
 

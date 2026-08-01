@@ -1,0 +1,7 @@
+{
+  "tokens_generated": 200,
+  "generation_tok_per_sec": 8.982622353534188,
+  "prompt_tokens": 14,
+  "prompt_tok_per_sec": 29.254613348044224,
+  "ttft_ms": 478.557
+}

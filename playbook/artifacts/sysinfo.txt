@@ -1,0 +1,18 @@
+# NightShift host — captured 2026-07-31T22:40:35Z
+## CPU
+Architecture:                            aarch64
+CPU(s):                                  96
+On-line CPU(s) list:                     0-95
+Vendor ID:                               ARM
+Model name:                              Neoverse-N2
+NUMA node0 CPU(s):                       0-47
+NUMA node1 CPU(s):                       48-95
+## Memory
+               total        used        free      shared  buff/cache   available
+Mem:           660Gi        14Gi       286Gi       4.3Mi       361Gi       645Gi
+## GPU (spoiler: none)
+No GPU present.
+## Azure VM
+Standard_E96ps_v6 in eastus2, zone 2
+## Model on disk
+360G	/data/models/Kimi-K2-Thinking-GGUF/UD-Q2_K_XL
