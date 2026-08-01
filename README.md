@@ -10,6 +10,24 @@ zero GPUs, with your code never leaving your own Azure tenant.
 
 > Built for the [Arm Create: AI Optimization Challenge 2026](https://arm-ai-optimization-challenge.devpost.com/) — Cloud AI track.
 
+## Update — we ran Kimi K3 (2.8 **trillion** params) on Arm CPUs 🚀
+
+Five days after Moonshot released **Kimi K3** — 2.8T parameters, 896 experts, brand-new
+architecture — we ran it on CPU, on Arm, with no GPU. To our knowledge this is the first
+CPU inference of K3 on Arm server silicon.
+
+- **Hardware:** one Azure `E96ps_v6` (96× Neoverse-N2, Cobalt 100, 660 GiB RAM, 0 GPUs)
+- **Runtime:** llama.cpp built from the unmerged K3 support PR ([#26185](https://github.com/ggml-org/llama.cpp/pull/26185)) with Arm KleidiAI kernels
+- **Model:** Unsloth `UD-IQ1_S` (1.56 bits/weight, 554 GB, fits in RAM)
+- **Measured:** **~2.3 tok/s generation · ~8.0 tok/s prompt**
+
+![Kimi K3 running on Arm CPUs](playbook/artifacts/shot_k3.png)
+
+This is the **capability ceiling** demo — proof that even a 2.8T model is reachable on
+commodity Arm CPUs. It's slow (async-only) and the 1.56-bit quant trades quality for fit, so
+**Kimi K2 (1.04T) remains NightShift's practical tier** with the full results below. K3 is the
+"how far can Arm CPUs go" flag in the ground.
+
 ## Why this works (the one-paragraph version)
 
 Trillion-parameter models are assumed to need a GPU cluster. But K2 is a mixture-of-experts
