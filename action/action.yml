@@ -1,0 +1,39 @@
+name: "NightShift PR Review"
+description: "Overnight PR review by a self-hosted LLM on Arm CPUs — your code never leaves your tenant."
+branding:
+  icon: "moon"
+  color: "blue"
+inputs:
+  endpoint:
+    description: "OpenAI-compatible base URL of your NightShift server (e.g. http://vm:8080/v1)"
+    required: true
+  model:
+    description: "Model alias to request"
+    required: false
+    default: "kimi-k2"
+  tier:
+    description: "Label shown in the review header (deep | interactive)"
+    required: false
+    default: "deep"
+  max_tokens:
+    description: "Max review length in tokens"
+    required: false
+    default: "2000"
+  github_token:
+    description: "Token used to post the review comment"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: NightShift review
+      shell: bash
+      env:
+        NS_ENDPOINT: ${{ inputs.endpoint }}
+        NS_MODEL: ${{ inputs.model }}
+        NS_TIER: ${{ inputs.tier }}
+        NS_MAX_TOKENS: ${{ inputs.max_tokens }}
+        GH_TOKEN: ${{ inputs.github_token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+      run: |
+        bash "${GITHUB_ACTION_PATH}/review.sh"

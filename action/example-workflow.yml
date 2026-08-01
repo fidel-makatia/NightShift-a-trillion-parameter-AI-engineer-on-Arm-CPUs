@@ -1,0 +1,22 @@
+# Drop this into .github/workflows/nightshift.yml in your repo.
+# It reviews every opened/updated PR using YOUR self-hosted NightShift endpoint.
+name: NightShift PR Review
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write   # to post the review comment
+      contents: read
+    steps:
+      - uses: fidel-makatia/NightShift-a-trillion-parameter-AI-engineer-on-Arm-CPUs/action@main
+        with:
+          # Your NightShift server. Keep it private: expose via Tailscale, a
+          # self-hosted runner on the same VNet, or a GitHub secret'd tunnel URL.
+          endpoint: ${{ secrets.NIGHTSHIFT_ENDPOINT }}
+          model: kimi-k2
+          tier: deep
+          github_token: ${{ secrets.GITHUB_TOKEN }}
