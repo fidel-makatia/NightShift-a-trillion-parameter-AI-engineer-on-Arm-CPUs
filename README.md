@@ -85,23 +85,7 @@ one-command deploy.
 
 ## How it works
 
-```
-                       ┌─────────────────────────────────────────────┐
-   developer traffic   │   Azure E96ps_v6  ·  Arm Cobalt 100  ·  0 GPU │
-   (PRs, issues,       │                                               │
-    code gen) ───────► │   ┌───────────────┐     ┌───────────────┐     │
-                       │   │  DEEP tier     │     │ INTERACTIVE    │     │
-                       │   │  Kimi K2 / K3  │     │ Qwen3-30B      │     │
-                       │   │  1.04–2.8 T    │     │ 30B (3B active)│     │
-                       │   │  ~3–11 tok/s   │     │  ~48 tok/s     │     │
-                       │   └───────┬───────┘     └───────┬───────┘     │
-                       │           │  llama.cpp + KleidiAI (i8mm/SVE2)  │
-                       │           ▼                                     │
-                       │   360–554 GB of weights, memory-mapped,         │
-                       │   NUMA-tuned, continuous-batched                │
-                       └─────────────────────────────────────────────┘
-   one `terraform apply`  ·  OpenAI-compatible endpoint  ·  Arm CPU, no GPU
-```
+![NightShift architecture — two model tiers on one Arm CPU VM](playbook/artifacts/how-it-works.png)
 
 - **[K2-in-a-box](infra/)** — Terraform + cloud-init provision the VM, a model disk, and a
   llama.cpp build with KleidiAI, exposing an OpenAI-compatible endpoint.
