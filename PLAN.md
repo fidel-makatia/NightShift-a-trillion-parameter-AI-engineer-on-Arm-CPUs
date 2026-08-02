@@ -27,7 +27,7 @@ Strategy: retire the boring risks first (quota, download), bank the guaranteed d
 - [ ] Sweeps: quant ladder (1/2/3/4-bit) × KleidiAI on/off × thread counts
 - [ ] Quality evals per quant (small fixed suite: coding + reasoning tasks) — speed without
       quality is a toy; this chart is what makes it research
-- [ ] Comparison points: Llama 4 Maverick (17B active) same VM; note Cobalt 200 preview if granted
+- [ ] Comparison points: quant ladder; note Cobalt 200 preview if granted
 
 ## Phase 3 — Thu Aug 7 → Sun Aug 10: ExpertAtlas (the winning engineering)
 
@@ -57,4 +57,4 @@ Strategy: retire the boring risks first (quota, download), bank the guaranteed d
 1. Quota denied for 96 vCPU → 2× E48ps_v6 or E64ps_v6 + 1-bit quant (245 GB)
 2. RPC swarm flaky → cut it; single-VM story is complete without it
 3. ExpertAtlas placement gains disappoint → the *profiling study* alone is still novel content
-4. K2 Thinking too slow for video → K2.7 Code or Maverick for the live demo, K2 for async
+4. K2 Thinking too slow for video → K2.7 Code for the live demo, K2 for async

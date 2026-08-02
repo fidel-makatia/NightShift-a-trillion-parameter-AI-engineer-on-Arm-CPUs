@@ -43,7 +43,7 @@ NightShift is four things stacked into one story:
    your tenant.
 4. **The Trillion-Parameter CPU Playbook** (`playbook/`): the reproducible study — quant
    ladder (1-bit → 4-bit) measured for speed *and* quality, KleidiAI/i8mm on vs off,
-   scale-up vs scale-out, MoE sparsity comparison (K2 32B-active vs Llama 4 Maverick
+   scale-up vs scale-out, MoE sparsity comparison across quants
    17B-active), thread/NUMA sweeps. Every chart regenerable from `bench/`.
 
 ## How we built it
