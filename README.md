@@ -121,19 +121,13 @@ CPU only, no GPU. Every number below is reproducible — raw outputs in [`kernel
 
 ### Inference throughput (models on the same VM)
 
-| Model | Params (total / active) | Token generation | Prompt processing |
-|---|---|---|---|
-| Kimi K3 | 2.8 T / ~104 B | 2.3 tok/s | 8.0 tok/s |
-| Kimi K2 | 1.04 T / 32 B | 8.98–11 tok/s | 20.6–29.3 tok/s |
-| **Llama 4 Maverick** | **400 B / 17 B** | **22 tok/s** | 133 tok/s |
-| Qwen3-30B-A3B | 30 B / 3 B | **48 tok/s** | 232 tok/s |
+| Model | Params (total / active) | Token generation | Prompt processing | $/PR review (spot) |
+|---|---|---|---|---|
+| Kimi K3 | 2.8 T / ~104 B | 2.3 tok/s | 8.0 tok/s | — (capability ceiling) |
+| Kimi K2 | 1.04 T / 32 B | **8.98–11 tok/s** | 20.6–29.3 tok/s | **$0.081** |
+| Qwen3-30B-A3B | 30 B / 3 B | **48 tok/s** | 232 tok/s | $0.012 |
 
-**On CPU, *active* parameters — not total size — set the speed.** A flagship **400B Llama 4
-Maverick** (17B active) generates at **22 tok/s** on the Arm VM — *faster than the 1T Kimi K2* and
-above the 20 tok/s interactive line, entirely on CPU. Thread tuning alone took K3 gen 1.42 → 2.45
-tok/s (1.7×, free).
-
-![Active parameters set CPU speed](playbook/artifacts/pro_active_params.png)
+*Thread tuning alone took K3 generation 1.42 → 2.45 tok/s (1.7×, free).*
 
 ![Two serving tiers](playbook/artifacts/pro_two_tier.png)
 ![Thread scaling and the bandwidth wall](playbook/artifacts/pro_scaling.png)
