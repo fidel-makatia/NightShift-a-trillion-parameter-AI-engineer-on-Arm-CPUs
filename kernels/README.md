@@ -86,9 +86,15 @@ columns per SMMLA. That lifts single-core throughput to **110 GFLOP/s**.
 - [`results.txt`](results.txt) — full measured output across batch sizes
 
 ```bash
-# on the Arm VM:
+# on the Cobalt 100 VM (Neoverse-N2):
 cc -O3 -mcpu=neoverse-n2 -o gemm_q8 gemm_q8.c -lm && ./gemm_q8
+
+# to validate on ANY other Arm machine (Apple silicon, AWS Graviton, a Pi 5, …):
+cc -O3 -mcpu=native   -o gemm_q8 gemm_q8.c -lm && ./gemm_q8
 ```
+> `gemm_q8.c` / `gemv_q8.c` are self-contained (no dependencies) — a judge can build and run
+> them on any Arm CPU in seconds. The head-to-head files (`head2head.c`, `q2k_smmla.c`) link
+> `libggml-cpu.so`, so they need a llama.cpp build; see `infra/cloud-init.yaml` for the exact flags.
 
 ## What's next
 Wire this microkernel into llama.cpp as an IQ-quant repack path (the exotic IQ1_S format that
