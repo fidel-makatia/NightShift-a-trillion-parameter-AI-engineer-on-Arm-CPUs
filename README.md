@@ -18,6 +18,23 @@
 
 ---
 
+## Run it out of the box (no cloud account needed)
+
+Clone and run — the hand-written Arm kernel benchmark and the ExpertAtlas analysis reproduce
+locally in seconds, on **any Arm machine** (Apple silicon, AWS Graviton, a Raspberry Pi 5, or the
+Cobalt VM). No Azure, no model download, no setup:
+
+```bash
+git clone https://github.com/fidel-makatia/NightShift-a-trillion-parameter-AI-engineer-on-Arm-CPUs
+cd NightShift-*
+./run.sh
+```
+
+`run.sh` builds and runs the SMMLA GEMM kernel (self-contained C, ~5 s — on an Apple M-series or
+Graviton you'll see the i8mm kernel hit **~2.4× over the compiler**), then reproduces the
+ExpertAtlas routing-skew analysis and the benchmark charts from committed real data. Only the full
+trillion-parameter deploy needs a VM — see [Get started](#get-started).
+
 ## See it running
 
 | | |
