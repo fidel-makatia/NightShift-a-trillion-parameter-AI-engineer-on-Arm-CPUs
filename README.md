@@ -119,7 +119,23 @@ one-command deploy.
 
 ## Benchmarks
 
-**Throughput on one E96ps_v6 (96× Neoverse-N2), llama.cpp + KleidiAI, CPU only:**
+All measured on one Azure `E96ps_v6` (96× Arm Neoverse-N2, Cobalt 100), llama.cpp + KleidiAI,
+CPU only, no GPU. Every number below is reproducible — raw outputs in [`kernels/`](kernels/) and
+[`bench/results/`](bench/results/).
+
+![NightShift benchmarks](pics/benchmark.png)
+
+### Arm kernel — hand-written SMMLA vs llama.cpp production (the optimization)
+
+| Kernel benchmark | Result | vs llama.cpp production | Correctness |
+|---|---|---|---|
+| **Q2_K GEMM** (the quant Kimi K2 runs) | 42.0 GFLOP/s | **1.41×** (first SMMLA GEMM for a K-quant) | bit-exact |
+| **Q8_0 GEMM** (head-to-head) | 94.9 GFLOP/s | **2.51×** vs per-row path | `max\|err\|=0` |
+| batch crossover (naive → SMMLA) | 110.6 GFLOP/s | **17.5×** vs naive C | bit-exact |
+
+![Q2_K kernel beats llama.cpp](playbook/artifacts/pro_kernel_q2k.png)
+
+### Inference throughput (models on the same VM)
 
 | Model | Params (total / active) | Token generation | Prompt processing | $/PR review (spot) |
 |---|---|---|---|---|
@@ -127,9 +143,11 @@ one-command deploy.
 | Kimi K2 | 1.04 T / 32 B | **8.98–11 tok/s** | 20.6–29.3 tok/s | **$0.081** |
 | Qwen3-30B-A3B | 30 B / 3 B | **48 tok/s** | 232 tok/s | $0.012 |
 
+*Thread tuning alone took K3 generation 1.42 → 2.45 tok/s (1.7×, free).*
+
 ![Two serving tiers](playbook/artifacts/pro_two_tier.png)
-![Cost per review](playbook/artifacts/pro_cost.png)
 ![Thread scaling and the bandwidth wall](playbook/artifacts/pro_scaling.png)
+![Cost per review](playbook/artifacts/pro_cost.png)
 
 Raw CSVs and reproducible scripts: [`bench/`](bench/) · full study: [`playbook/`](playbook/).
 
