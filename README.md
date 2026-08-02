@@ -12,7 +12,7 @@
 
 *Run a 1–2.8 trillion-parameter mixture-of-experts model on a single spot-priced Arm VM,*
 *and put it to work on the developer jobs where cost matters and latency doesn't —*
-*PR review, issue triage, code generation — for ~$1/hour, with your code never leaving your tenant.*
+*PR review, issue triage, code generation — CPU-only, with your code never leaving your tenant.*
 
 </div>
 
@@ -100,7 +100,7 @@ one-command deploy.
                        │   360–554 GB of weights, memory-mapped,         │
                        │   NUMA-tuned, continuous-batched                │
                        └─────────────────────────────────────────────┘
-   one `terraform apply`  ·  OpenAI-compatible endpoint  ·  ~$1/hour spot
+   one `terraform apply`  ·  OpenAI-compatible endpoint  ·  Arm CPU, no GPU
 ```
 
 - **[K2-in-a-box](infra/)** — Terraform + cloud-init provision the VM, a model disk, and a
