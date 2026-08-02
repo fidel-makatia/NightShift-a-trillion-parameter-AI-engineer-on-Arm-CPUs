@@ -52,7 +52,6 @@ trillion-parameter deploy needs a VM — see [Get started](#get-started).
 - [Benchmarks](#benchmarks)
 - [Get started](#get-started)
 - [Optimization: chasing tokens/sec](#optimization-chasing-tokenssec)
-- [Related work — Colibri, and the Arm opportunity](#related-work--colibri-and-the-arm-opportunity)
 - [What's next](#whats-next)
 - [Repo layout](#repo-layout)
 - [Acknowledgements & license](#acknowledgements--license)
@@ -166,20 +165,6 @@ ceiling (~200 GB/s). The real roads to higher throughput: **(1)** the lighter K2
 (already 11 / 48 tok/s), **(2)** Cobalt 200 (+50% bandwidth, in preview), and **(3)** speculative
 decoding — which beats the per-token wall but needs a vocab-matched draft model (see below).
 
-## Related work — Colibri, and the Arm opportunity
-
-[**Colibri**](https://github.com/JustVugg/colibri) is an excellent pure-C engine running frontier
-MoE models (GLM-5.2, **Kimi K3**, Inkling) on consumer hardware via three-tier RAM/NVMe/VRAM
-streaming, learned expert caching, and int8-MTP speculative decoding. It independently validates
-NightShift's thesis and its ~1.8 tok/s CPU numbers confirm my bandwidth analysis. Notably, its
-"learned expert caching" is the same mechanism as my **ExpertAtlas** — convergent evidence the
-idea is sound.
-
-**The gap it leaves open is Arm.** Colibri targets x86-64 only. The natural next contribution —
-and the one most on-theme for the Arm challenge — is to bring Colibri-style tiered streaming +
-learned caching to **Arm with KleidiAI kernels**, and to add an MTP draft path for Kimi. That's
-NightShift's roadmap.
-
 ## What's next
 
 - [ ] MTP / speculative decoding for Kimi on Arm (beats the bandwidth wall)
@@ -202,7 +187,6 @@ video/       demo-video builder + rendered MP4s
 
 Built on [llama.cpp](https://github.com/ggml-org/llama.cpp), Arm [KleidiAI](https://gitlab.arm.com/kleidi/kleidiai),
 [Unsloth](https://huggingface.co/unsloth) dynamic GGUF quants, and Moonshot AI's
-[Kimi](https://github.com/MoonshotAI/Kimi-K2) models. Thanks to [Colibri](https://github.com/JustVugg/colibri)
-for charting the frontier-MoE-on-consumer-hardware path.
+[Kimi](https://github.com/MoonshotAI/Kimi-K2) models.
 
 Licensed under [Apache 2.0](LICENSE).
