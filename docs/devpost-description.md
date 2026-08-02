@@ -83,8 +83,19 @@ $$C_{ij} \mathrel{+}= \sum_{k} A_{ik}\,B_{jk},\qquad A,B \in \mathbb{Z}_8^{2\tim
 - **Arm's `i8mm`/SMMLA is powerful, but only with the right shape** — batched, with the
   dequant/scale work kept vectorized — and llama.cpp already optimizes Q8_0, so the honest, novel
   contribution was the un-optimized K-quant path.
-- I also found [Colibri](https://github.com/JustVugg/colibri), an x86 engine proving this thesis —
-  and the gap it leaves open is Arm, which is exactly where NightShift lives.
+
+## Why this matters
+
+Frontier AI is gatekept by GPUs — a node that can hold a trillion-parameter model costs tens of
+thousands of dollars. NightShift shows the **same class of model running on one commodity Arm CPU
+VM for ~\$1/hour**, fully inside your own tenant. That changes three things at once: **access**
+(any developer with a cloud account, not just those with GPU budgets — a trillion-parameter PR
+review is ~8¢), **privacy** (self-hosted; code never leaves your tenant, which GPU-API services
+can't offer), and **the Arm ecosystem itself** — the first `i8mm`/SMMLA GEMM for a K-quant beats
+llama.cpp's production kernel 1.41×, bit-exact, an upstreamable win for every Arm developer running
+the sub-2-bit quants that make these models fit in RAM. And it's a repeatable blueprint, not a
+demo: one `terraform apply` reproduces the system, and the kernel validates on any Arm machine in
+seconds.
 
 ## What's next for NightShift — a trillion-parameter AI engineer on Arm CPUs
 

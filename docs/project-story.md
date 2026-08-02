@@ -108,9 +108,25 @@ also *why* ggml never added `i8mm` for K-quants — and now there's a path that 
   scale/dequant work vectorized.
 - **Know the state of the art before you claim a win.** llama.cpp already SMMLA-optimizes Q8_0; the
   honest, novel contribution was the *un*optimized K-quant path.
-- I also found [Colibri](https://github.com/JustVugg/colibri), a pure-C engine doing frontier-MoE
-  inference on consumer hardware (x86-only). It independently validates this thesis — and the gap
-  it leaves open is Arm, which is exactly where NightShift lives.
+
+## Why this matters
+
+Frontier AI is effectively gatekept by GPUs — a single node capable of a trillion-parameter model
+costs tens of thousands of dollars and is scarce. NightShift shows that the **same class of model
+can run on one commodity Arm CPU VM for about \$1/hour**, entirely inside your own tenant, with
+your code never leaving it. That is a real shift in access, cost, and privacy for the largest open
+models — and it lands squarely on the Arm platform:
+
+- **Access & cost.** A 1–2.8-trillion-parameter engineer becomes reachable to any developer with a
+  cloud account, not just those with GPU budgets. A trillion-parameter PR review costs ~8 cents.
+- **Privacy.** Self-hosted on your Arm VM — no code or data leaves your tenant, which GPU-API
+  services can't offer.
+- **A concrete contribution to the Arm ecosystem.** The **first `i8mm`/SMMLA GEMM for a K-quant**
+  beats llama.cpp's production kernel by 1.41×, bit-exact — an upstreamable optimization that
+  speeds up *every* Arm developer running the sub-2-bit quants that make these models fit in RAM.
+- **A validated blueprint.** One `terraform apply` reproduces the whole system, and the kernel
+  benchmark validates on any Arm machine in seconds — this isn't a one-off demo, it's a repeatable
+  path for running frontier MoE models on Arm CPUs.
 
 ## Challenges I faced
 
