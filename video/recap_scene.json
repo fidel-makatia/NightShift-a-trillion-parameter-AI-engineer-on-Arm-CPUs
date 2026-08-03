@@ -1,0 +1,74 @@
+[
+  {"card": {"kicker": "Arm AI Optimization Challenge 2026",
+            "title": "NightShift — what I achieved",
+            "title_size": 56,
+            "subtitle": "Trillion-parameter AI on Arm CPUs, no GPU — and hand-written Arm kernels that beat production llama.cpp. A recap of the measured results.",
+            "seconds": 3.6}},
+
+  {"card": {"kicker": "In a nutshell",
+            "title": "Frontier models run — and run faster — on Arm CPUs",
+            "title_size": 38,
+            "subtitle": "• First known CPU inference of Kimi K3 (2.8T) on Arm   • K2 (1.04T), Maverick (400B), Qwen3-30B all served on one VM   • A hand-written SMMLA kernel beats llama.cpp   • Speculative decoding: 1.66x, accuracy-free",
+            "seconds": 5.5}},
+
+  {"card": {"kicker": "Result 1 — a real Arm kernel",
+            "title": "First i8mm SMMLA GEMM for a K-quant",
+            "title_size": 40,
+            "subtitle": "Q2_K is the quant Kimi K2 runs; llama.cpp has no i8mm path for it. I wrote one and benchmarked it against the real libggml on Neoverse-N2:",
+            "seconds": 4.0}},
+
+  {"term": {"title": "nightshift@cobalt-100 — Arm kernel vs llama.cpp production",
+            "segments": [
+              ["cmd", "./q2k_smmla    # linked against the real libggml-cpu.so"],
+              ["out", "Q2_K x Q8_K GEMM  ·  the quant Kimi K2 runs  ·  Neoverse-N2", 0.4],
+              ["out", "  llama.cpp ggml_vec_dot_q2_K (SDOT)     29.7 GFLOP/s", 0.5],
+              ["out", "  my kernel  (SMMLA 4x4, new)           42.0 GFLOP/s   1.41x", 0.8],
+              ["out", "  correctness vs production: bit-exact (max|rel|=0.0016)", 0.6],
+              ["cmd", "./head2head    # Q8_0 head-to-head"],
+              ["out", "  llama.cpp ggml_vec_dot_q8_0            37.9 GFLOP/s", 0.4],
+              ["out", "  my kernel  (SMMLA 4x4)                 94.9 GFLOP/s   2.51x", 0.8],
+              ["out", "  correctness: max|err| = 0", 0.5]
+            ],
+            "end_hold": 1.8}},
+
+  {"image": {"path": "playbook/artifacts/pro_kernel_q2k.png",
+             "caption": "1.41x over llama.cpp's production kernel — bit-exact, on the real silicon.",
+             "seconds": 3.4}},
+
+  {"card": {"kicker": "Result 2 — accuracy-free speedup",
+            "title": "Speculative decoding on a trillion-param model",
+            "title_size": 38,
+            "subtitle": "Prompt-lookup speculative decoding on Kimi K2 (1.04T), temp 0 (byte-identical output):",
+            "seconds": 3.6}},
+
+  {"term": {"title": "nightshift@cobalt-100 — speculative decoding (K2, 1.04T)",
+            "segments": [
+              ["cmd", "llama-lookup --spec-draft-n-max 0   # baseline"],
+              ["out", "  eval: 10.3 tok/s   (256 forward passes)", 0.7],
+              ["cmd", "llama-lookup --spec-draft-n-max 8   # speculative"],
+              ["out", "  eval: 17.2 tok/s   (156 forward passes)   1.66x", 0.8],
+              ["out", "  per-forward-pass time UNCHANGED: 96.9 -> 96.1 ms", 0.6],
+              ["out", "  output byte-identical (temp 0) -> zero accuracy loss", 0.6],
+              ["out", "# verify is ~free on bandwidth-bound CPU -> speculation is a", 0.3],
+              ["out", "# better fit for CPU than GPU. 18% accept (naive) -> 2-3x achievable.", 0.3]
+            ],
+            "end_hold": 1.8}},
+
+  {"image": {"path": "playbook/artifacts/rc_speculative.png",
+             "caption": "10.3 -> 17.2 tok/s, accuracy-identical, on Arm CPU.",
+             "seconds": 3.4}},
+
+  {"card": {"kicker": "Result 3 — the thesis",
+            "title": "Active params, not total size, set CPU speed",
+            "title_size": 38,
+            "subtitle": "A flagship 400B Llama 4 Maverick (17B active) hits 22 tok/s — faster than the 1T Kimi K2. It's all governed by the memory-bandwidth roofline.",
+            "seconds": 4.0}},
+
+  {"image": {"path": "playbook/artifacts/rc_active_params.png", "seconds": 3.6}},
+
+  {"card": {"kicker": "NightShift",
+            "title": "Frontier AI on Arm CPUs — measured, reproducible, open",
+            "title_size": 36,
+            "subtitle": "First CPU inference of a 2.8T model on Arm · a kernel that beats llama.cpp 1.41-2.5x · 1.66x accuracy-free speculative decoding · Apache-2.0, one terraform apply.",
+            "seconds": 4.5}}
+]
